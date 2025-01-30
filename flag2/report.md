@@ -1,44 +1,42 @@
-# Exposition d'un dossier caché référencé dans `robot.txt`
+# Exposure of a Hidden Folder Referenced in robots.txt
 
 ## Description
 
-Le fichier `robot.txt` indique aux moteurs de recherche les parties du site à ne pas indexer. \
-Mais il peut par là-même révéler des chemins confidentiels.
+The `robots.txt` file instructs search engines on which parts of the site should not be indexed. 
+However, it can inadvertently reveal confidential paths.
 
-Ici, `robot.txt` mentionne un dossier `.hidden`. Ce dossier contenait plus de 3000 fichiers et dossiers. \
-L'un de ces fichiers contenait le flag.
+In this case, `robots.txt` mentions a `.hidden` folder. This folder contained over 3,000 files and subdirectories. 
+One of these files contained the flag.
 
-## Step to reproduce
+## Steps to Reproduce
 
-1. Télécharger l'intégralité du dossier caché en ignorant les règles de `robot.txt`:
+1. Download the entire hidden folder while ignoring `robots.txt` rules:
 ```
 wget -e robots=off -r --no-parent http://192.168.56.101/.hidden/
 ```
 
-2. Chercher tous les fichiers README et extraire leur contenu :
+2. Search for all `README` files and extract their content:
 ```
 find . -name 'README' -print -exec cat {} >> readme.txt ; -exec echo ;
 ```
 
-3.	Chercher "flag" dans le fichier.
+3. Search for the word “flag” in the file.
 ```
-Hey, here is your flag : d5eec3ec36cf80dce44a896f961c1831a05526ec215693c8f2c39543497d4466
+Hey, here is your flag: d5eec3ec36cf80dce44a896f961c1831a05526ec215693c8f2c39543497d4466
 ```
 
-## Danger
+## Risks
 
-• **Exposition d’informations sensibles** : Un attaquant peut découvrir des dossiers cachés et extraire des données confidentielles.
-• **Risque d’indexation malveillante** : Même si robots.txt interdit l’indexation, il est souvent analysé par des attaquants pour identifier des fichiers cachés.
-• **Brute-force facilité** : Un dossier contenant des milliers de fichiers avec des noms aléatoires peut être exploré automatiquement via des outils comme wget ou dirb.
+• **Exposure of sensitive information:** An attacker can discover hidden folders and extract confidential data.
+• **Risk of malicious indexing:** Even if `robots.txt` prevents indexing, attackers often analyze it to identify hidden files.
 
-## Recommanded fix
+## Recommended Fix
 
-1. Ne pas exposer d’informations sensibles dans robots.txt : Éviter d’y mentionner des chemins qui ne doivent pas être accessibles.
+1. **Do not expose sensitive information in robots.txt:** Avoid listing confidential paths.
 
-2. Restreindre l’accès via configuration serveur :
+2. **Restrict access via server configuration:**
 
-• Sur Apache, ajouter une règle dans .htaccess pour interdire l’accès au dossier :
-
+• On Apache, add a rule in `.htaccess` to deny access to the folder:
 ```
 <Directory "/var/www/html/.hidden">
     Order Allow,Deny
@@ -46,8 +44,7 @@ Hey, here is your flag : d5eec3ec36cf80dce44a896f961c1831a05526ec215693c8f2c3954
 </Directory>
 ```
 
-• Sur Nginx, bloquer l’accès via nginx.conf :
-
+• On Nginx, block access in `nginx.conf`:
 ```
 location /.hidden {
     deny all;
@@ -55,5 +52,4 @@ location /.hidden {
 }
 ```
 
-3. Utiliser un mécanisme d’authentification : Protéger les dossiers sensibles par une authentification (.htpasswd, JWT, sessions).
-
+3. **Authentication mechanism**: Protect sensitive folders with authentication (.htpasswd, JWT, sessions).
