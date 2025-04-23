@@ -2,54 +2,44 @@
 
 ## Description
 
-The `robots.txt` file instructs search engines on which parts of the site should not be indexed. 
-However, it can inadvertently reveal confidential paths.
+The `robots.txt` file tells to the search engines the parts of the site that should not be indexed. 
+-> It can reveal which parts the developers want to hide from the public.
 
-In this case, `robots.txt` mentions a `.hidden` folder. This folder contained over 3,000 files and subdirectories. 
+We found that `robots.txt` contains a `.hidden` folder. This folder contained ~ 3,000 files within directories and subdirectories. 
 One of these files contained the flag.
 
 ## Steps to Reproduce
 
-1. Download the entire hidden folder while ignoring `robots.txt` rules:
+1. Download the hidden folder, ignoring `robots.txt` rules:
 ```
 wget -e robots=off -r --no-parent http://192.168.56.101/.hidden/
 ```
 
-2. Search for all `README` files and extract their content:
+2. Search all `README` files and extract their content:
 ```
 find . -name 'README' -print -exec cat {} >> readme.txt ; -exec echo ;
 ```
 
-3. Search for the word “flag” in the file.
+3. Search the word “flag” in the file.
 ```
 Hey, here is your flag: d5eec3ec36cf80dce44a896f961c1831a05526ec215693c8f2c39543497d4466
 ```
 
 ## Risks
 
-• **Exposure of sensitive information:** An attacker can discover hidden folders and extract confidential data.
-• **Risk of malicious indexing:** Even if `robots.txt` prevents indexing, attackers often analyze it to identify hidden files.
+• **Exposition of sensitive information:** An attacker can discover hidden folders and extract confidential data.
+• **Risk of malicious indexing:** Even if `robots.txt` prevent indexing, attackers can analyze it to know which files you want to be prevented from indexing.
 
 ## Recommended Fix
 
-1. **Do not expose sensitive information in robots.txt:** Avoid listing confidential paths.
+1. **Do not expose sensitive information in robots.txt**
 
-2. **Restrict access via server configuration:**
+2. **Restrict access using the server configuration:**
 
-• On Apache, add a rule in `.htaccess` to deny access to the folder:
-```
-<Directory "/var/www/html/.hidden">
-    Order Allow,Deny
-    Deny from all
-</Directory>
-```
-
-• On Nginx, block access in `nginx.conf`:
+• `nginx.conf`:
 ```
 location /.hidden {
     deny all;
     return 403;
 }
 ```
-
-3. **Authentication mechanism**: Protect sensitive folders with authentication (.htpasswd, JWT, sessions).

