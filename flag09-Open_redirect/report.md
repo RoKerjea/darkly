@@ -7,6 +7,9 @@ By modifying the adress of an external link from the website, for example "href=
 just put the following adress in a browser:
 "http://192.168.56.101/index.php?page=redirect&site=fakewebsite.com"
 
+and we get
+b9e775a0291fed784a2d9680fcfad7edd6b8cdf87648da647aaf4bba288bcab3
+
 
 ## Danger
 we can create an imitation of the website with a valid url that would convince a user he is on the proper website and can use his password or make payment.
