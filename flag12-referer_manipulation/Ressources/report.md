@@ -15,6 +15,10 @@ right clic on the GET ?page=XXXXXX request-> edit and resend
 we can edit the user-agent to be "ft_bornToSec"
 (if i understood the parameters of mozilla correctly, we could also edit the referer here, but instead i just used an addon)
 if we use an addon to change the referer to https://www.nsa.gov/
+Command : 
+```bash
+ curl 'http://192.168.56.106/?page=b7e44c7a40c5f80139f0a50f3650fb2bd8d00b0d24667c4c2ca32c88e13b758f' -H 'User-Agent: ft_bornToSec'  -H 'Referer: https://www.nsa.gov/' |grep flag
+```
 and send the edited request, we receive:
 
 "The flag is : f2a29020ef3132e01dd61df97fd33ec8d7fcd1388cc9601e7db691d17d4d6188"

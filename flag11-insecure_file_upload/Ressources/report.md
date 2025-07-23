@@ -13,9 +13,12 @@ The site is not correctly protected against malicious file upload. We can bypass
 4. But if we inspect the page->network->right click on the POST request-> "edit and resend", we can see the header and body of the post request that failed.
 5. Simply replacing the line "Content-Type: application/xhtml+xml" by "Content-Type: image/jpeg"
 and clicking "Send" gives us the flag "46910d9ce35b385885a9f7e2b336249d622f29b267a1771fbacf52133beddba8".(we need to see the response to that request in the inspector window, not in the main browser)
-6. Ou avec un curl : curl -X POST \
+6. Ou avec un curl : 
+``` bash
+curl -X POST \
   -F "uploaded=@./test.php;type=image/jpeg" -F "Upload=Upload" \
   "192.168.56.106/index.php?page=upload"
+```
 ## Danger
 
 - The website might accept files in format that could cause problems just by being present

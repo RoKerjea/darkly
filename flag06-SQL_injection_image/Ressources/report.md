@@ -18,6 +18,15 @@ We remarked that `comment` was not displayed, so we attempted to display it.
 
 ### Identify Table Structure
 
+First, we need to find the correct number of columns in the database.
+
+``` sql
+1 ORDER BY 1 --
+1 ORDER BY 2 --
+1 ORDER BY 3 --
+```
+We assume that the database uses this syntax.
+
 List the existing table columns:
 
 ```sql
